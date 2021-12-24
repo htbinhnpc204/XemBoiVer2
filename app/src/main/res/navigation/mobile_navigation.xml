@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.htbinh.xemboiver2.ui.home.HomeFragment"
+        android:label="Xem bói tình yêu"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="com.htbinh.xemboiver2.ui.histories.HistoriesFragment"
+        android:label="Lịch sử xem bói"
+        tools:layout="@layout/fragment_histories" />
+
+    <fragment
+        android:id="@+id/nav_info"
+        android:name="com.htbinh.xemboiver2.ui.info.InfoFragment"
+        android:label="Thông tin cá nhân"
+        tools:layout="@layout/fragment_info" />
+
+    <fragment
+        android:id="@+id/nav_changepass"
+        android:name="com.htbinh.xemboiver2.ui.info.InfoFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_info" />
+
+    <fragment
+        android:id="@+id/nav_result"
+        android:name="com.htbinh.xemboiver2.ui.home.result.ResultFragment"
+        android:label="Kết quả"
+        tools:layout="@layout/fragment_result" />
+</navigation>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.register.RegisterActivity"
+    android:padding="16dp"
+    android:background="@drawable/img_bg">
+
+    <EditText
+        android:id="@+id/registerU"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_email"
+        android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="4dp"
+        android:background="@drawable/ic_edit_text_bg"
+        android:textColor="@color/primary_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".3" />
+
+    <EditText
+        android:id="@+id/registerP"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/prompt_password"
+        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="4dp"
+        android:background="@drawable/ic_edit_text_bg"
+        android:textColor="@color/primary_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerU" />
+
+    <EditText
+        android:id="@+id/rePassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Nhập lại mật khẩu"
+        android:imeActionLabel="Nhập lại mật khẩu"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:selectAllOnFocus="true"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="4dp"
+        android:background="@drawable/ic_edit_text_bg"
+        android:textColor="@color/primary_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerP" />
+
+    <CheckBox
+        android:id="@+id/showPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hiển thị mật khẩu"
+        android:textSize="11sp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rePassword"
+        android:textColor="@color/primary_color"
+        android:buttonTint="@color/primary_color"/>
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="true"
+        android:text="@string/action_sign_up_short"
+        android:background="@drawable/ic_btn_bg_filled"
+        android:textColor="@color/white"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rePassword"
+        app:layout_constraintVertical_bias="0.2" />
+
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:indeterminateTint="@color/primary_color"
+        app:layout_constraintEnd_toEndOf="@+id/registerP"
+        app:layout_constraintStart_toStartOf="@+id/registerP"
+        app:layout_constraintTop_toBottomOf="@+id/rePassword" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
