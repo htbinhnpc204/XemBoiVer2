@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Session {
 
-    private SharedPreferences prefs;
+    private final SharedPreferences prefs;
 
     public Session(Context cntx) {
         // TODO Auto-generated constructor stub

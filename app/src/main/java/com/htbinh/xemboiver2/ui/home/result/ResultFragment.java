@@ -50,6 +50,7 @@ public class ResultFragment extends Fragment {
         tongDiem = binding.tongDiem;
         ketLuan = binding.ketLuan;
 
+        assert getArguments() != null;
         String html = getArguments().getString("html");
 
         if (!html.equals("")) {
@@ -108,5 +109,10 @@ public class ResultFragment extends Fragment {
         hoTenBody.setText(Html.fromHtml(data.get(4)));
         tongDiem.setText(Html.fromHtml(data.get(5)));
         ketLuan.setText(Html.fromHtml(data.get(6)));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

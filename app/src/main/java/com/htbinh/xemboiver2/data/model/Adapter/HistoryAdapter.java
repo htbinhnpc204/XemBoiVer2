@@ -27,9 +27,9 @@ import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> implements Filterable {
 
-    private List<History> histories;
+    private final List<History> histories;
     private List<History> historyFilters;
-    private HistoryAdapterListener listener;
+    private final HistoryAdapterListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView id, name, dob, stt;

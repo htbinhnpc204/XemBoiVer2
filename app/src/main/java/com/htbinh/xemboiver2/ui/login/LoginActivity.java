@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.htbinh.xemboiver2.LoadingDialog;
 import com.htbinh.xemboiver2.MainActivity;
 import com.htbinh.xemboiver2.R;
 import com.htbinh.xemboiver2.Session;
@@ -51,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     Button loginButton;
     Button registerButton;
     CheckBox saveCheckBox;
+
+    LoadingDialog loadingDialog;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +67,8 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = binding.register;
         loadingProgressBar = binding.loading;
         saveCheckBox = binding.autoLogin;
+
+        loadingDialog = new LoadingDialog(this);
 
         session = new Session(getApplicationContext());
 
@@ -84,7 +89,6 @@ public class LoginActivity extends AppCompatActivity {
                 String user = usernameEditText.getText().toString().trim().toLowerCase(Locale.ROOT);
                 String pass = passwordEditText.getText().toString().trim().toLowerCase(Locale.ROOT);
                 if(isValidLogin() == 0){
-                    loadingProgressBar.setVisibility(View.VISIBLE);
                     doLogin(user, pass);
                 }
                 else if(isValidLogin() == 1){
@@ -126,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void doLogin(String user, String password){
-
+        loadingDialog.startLoading();
         JSONObject loginJSON = new JSONObject();
         try {
             loginJSON.put("user", user);
@@ -136,8 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         String loginString = loginJSON.toString();
 
         RequestQueue queue = Volley.newRequestQueue(this);
-
-        JsonObjectRequest personRequest = new JsonObjectRequest(Request.Method.GET, "https://xemboi-backend.herokuapp.com/account/" + session.getUserName(), null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest personRequest = new JsonObjectRequest(Request.Method.GET, "https://xemboi-backend.herokuapp.com/account/" + user, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try{
@@ -146,8 +149,8 @@ public class LoginActivity extends AppCompatActivity {
                         session.setDob(response.getString("dob"));
                         session.setGioitinh(response.getString("gioitinh"));
                     }
-                    loadingProgressBar.setVisibility(View.GONE);
-                    String welcome = getString(R.string.welcome) + session.getName();
+                    loadingDialog.dismissLoading();
+                    String welcome = getString(R.string.welcome) + (session.getName().equals("") ? session.getUserName() : session.getName());
                     Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     i.putExtra("isRegister", "false");
@@ -159,7 +162,11 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Request err", error.toString());
+                String welcome = getString(R.string.welcome) + user;
+                Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.putExtra("isRegister", "true");
+                startActivity(i);
             }
         });
 
@@ -182,9 +189,9 @@ public class LoginActivity extends AppCompatActivity {
                         public void run() {
                             queue.add(personRequest);
                         }
-                    },200);
+                    },500);
                 } else {
-                    loadingProgressBar.setVisibility(View.GONE);
+                    loadingDialog.dismissLoading();
                     Toast.makeText(getApplicationContext(), "Tài khoản hoặc mật khẩu không chính xác!"
                             , Toast.LENGTH_SHORT).show();
                 }

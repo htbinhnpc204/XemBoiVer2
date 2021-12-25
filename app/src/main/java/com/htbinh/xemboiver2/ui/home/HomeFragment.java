@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.htbinh.xemboiver2.LoadingDialog;
 import com.htbinh.xemboiver2.R;
 import com.htbinh.xemboiver2.Session;
 import com.htbinh.xemboiver2.databinding.FragmentHomeBinding;
@@ -50,33 +51,30 @@ public class HomeFragment extends Fragment {
     int selectedMonth = 0;
     int selectedDayOfMonth = 1;
 
-    boolean isSaved = false;
-
     DatePickerDialog.OnDateSetListener dateSetListener;
     Map<String, String> data;
     Session session;
     Connection.Response response;
-
-    String html = "";
-    View root;
+    LoadingDialog loadingDialog;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        root = binding.getRoot();
+        View root = binding.getRoot();
         session = new Session(getContext());
         Submit = binding.btnSubmit;
         DoB = binding.DoB;
         Name = binding.edtName;
         DobPicker = binding.btnSelectDoB;
+        loadingDialog = new LoadingDialog(getActivity());
 
         dateSetListener  = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year,
                                   int monthOfYear, int dayOfMonth) {
-                String Day = "" + ((dayOfMonth + 1) < 10 ? "0" + (dayOfMonth + 1) : (dayOfMonth + 1));
+                String Day = "" + (dayOfMonth < 10 ? "0" + dayOfMonth : dayOfMonth);
                 String Month = (monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1) + "";
                 String Year = "" + year;
                 String date = Day + "/" + Month + "/" + Year;
@@ -93,14 +91,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-
         Submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if(Name.getText().toString().equals("") || DoB.getText().toString().equals("Chọn ngày sinh")){
-                    Toast.makeText(getContext(), "Vui lòng điền đầy đủ tên của 2 bên thông gia ☺", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin người ấy ☺", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -121,6 +117,7 @@ public class HomeFragment extends Fragment {
                 data.put("ngaynu", ngaySinhNu[0]);
                 data.put("thangnu", ngaySinhNu[1]);
                 data.put("namnu", ngaySinhNu[2]);
+                loadingDialog.startLoading();
                 new getData().execute();
             }
         });
@@ -133,7 +130,7 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    private void doSaveHistory(View v){
+    private void doSaveHistory(String html){
         JSONObject historyJson = new JSONObject();
         JSONObject account = new JSONObject();
         try {
@@ -154,15 +151,16 @@ public class HomeFragment extends Fragment {
                 if (response.equals("true")) {
                     Bundle sendBundle = new Bundle();
                     sendBundle.putString("html", html);
-                    sendBundle.putString("action", "result");
                     Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main).navigate(R.id.nav_result, sendBundle);
                     Toast.makeText(getContext(), "Đã lưu lịch sử", Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismissLoading();
                 } else {
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                loadingDialog.dismissLoading();
                 Toast.makeText(getContext(), "Lỗi lưu lịch sử! " + error.toString(), Toast.LENGTH_LONG).show();
             }
         }) {
@@ -210,8 +208,7 @@ public class HomeFragment extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            html = s;
-            doSaveHistory(root);
+            doSaveHistory(s);
         }
     }
 }

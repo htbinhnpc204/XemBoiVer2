@@ -11,4 +11,8 @@ public class Validation {
         }
         return true;
     }
+
+    public static boolean isDateFormat(String arg){
+        return arg.matches("\\d{02}/\\d{02}/\\d{04}");
+    }
 }

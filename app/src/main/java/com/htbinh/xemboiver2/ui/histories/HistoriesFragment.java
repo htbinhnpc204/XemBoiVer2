@@ -125,7 +125,6 @@ public class HistoriesFragment extends Fragment implements HistoryAdapter.Histor
             @Override
             public void onErrorResponse(VolleyError error) {
                 loadingDialog.dismissLoading();
-
             }
         });
         queue.add(deleteRequest);

@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.htbinh.xemboiver2.LoadingDialog;
 import com.htbinh.xemboiver2.Session;
 import com.htbinh.xemboiver2.Validation;
 import com.htbinh.xemboiver2.databinding.FragmentInfoBinding;
@@ -37,6 +38,7 @@ public class InfoFragment extends Fragment {
     Button btnUpdate;
     Session session;
     RadioButton rdNam, rdNu;
+    LoadingDialog loadingDialog;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class InfoFragment extends Fragment {
         btnUpdate = binding.update;
         rdNam = binding.rdNam;
         rdNu = binding.rdNu;
+        loadingDialog = new LoadingDialog(getActivity());
 
         nameEditText.setText(session.getName());
         dobEditText.setText(session.getDob());
@@ -64,9 +67,14 @@ public class InfoFragment extends Fragment {
             public void onClick(View view) {
                 String name = nameEditText.getText().toString().trim();
                 String dob = dobEditText.getText().toString().trim();
-                if(Validation.validateData(name, dob)){
-                    doUpdate(name, dob);
-                }else{
+                if (Validation.validateData(name, dob)) {
+                    if (Validation.isDateFormat(dob)) {
+                        doUpdate(name, dob);
+                    } else {
+                        Toast.makeText(getContext(), "Định dạng ngày sinh không đúng\n(dd/MM/yyyy)", Toast.LENGTH_SHORT).show();
+                        dobEditText.requestFocus();
+                    }
+                } else {
                     Toast.makeText(getContext(), "Hãy nhập hết các trường dữ liệu!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -76,15 +84,17 @@ public class InfoFragment extends Fragment {
         return root;
     }
 
-    private void doUpdate(String name, String dob){
+    private void doUpdate(String name, String dob) {
+        loadingDialog.startLoading();
         JSONObject loginJSON = new JSONObject();
         JSONObject account = new JSONObject();
+        String gioiTinh = rdNam.isChecked() ? rdNam.getText().toString() : rdNu.getText().toString();
         try {
             account.put("user", session.getUserName());
             account.put("password", "");
             loginJSON.put("name", name);
             loginJSON.put("dob", dob);
-            loginJSON.put("gioitinh", rdNam.isChecked() ? rdNam.getText().toString() : rdNu.getText().toString());
+            loginJSON.put("gioitinh", gioiTinh);
             loginJSON.put("user", account);
         } catch (Exception e) {
         }
@@ -97,12 +107,14 @@ public class InfoFragment extends Fragment {
             public void onResponse(String response) {
                 session.setName(name);
                 session.setDob(dob);
-                session.setGioitinh(rdNam.isChecked() ? rdNam.getText().toString() : rdNu.getText().toString());
-                Toast.makeText(getContext(), response , Toast.LENGTH_LONG).show();
+                session.setGioitinh(gioiTinh);
+                loadingDialog.dismissLoading();
+                Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                loadingDialog.dismissLoading();
                 Toast.makeText(getContext(), "Lỗi nhé! " + error.toString(), Toast.LENGTH_LONG).show();
             }
         }) {
